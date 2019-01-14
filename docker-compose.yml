@@ -1,0 +1,40 @@
+version: "3"
+services:
+ db:
+  image: mysql:5.7
+  volumes:
+   - db_data:/var/lib/mysql
+  container_name: db
+  restart: always
+  ports:
+    - "3306:3306"
+  environment:
+   MYSQL_ROOT_PASSWORD: victory
+   MYSQL_DATABASE: express
+   MYSQL_USER: root
+ server:
+  depends_on:
+   - db
+  build: ./server
+  volumes:
+   - ./server/:/app
+   - /app/node_modules
+  container_name: node_server
+  ports:
+    - "3000:3000"
+  command:
+   - bin/sh
+   - sequelize db:migrate
+   - sequelize db:seed:all
+ client:
+  depends_on:
+   - server
+  build: ./client
+  volumes:
+   - ./client/:/app
+   - /app/node_modules
+  container_name: react_client
+  ports:
+    - "4000:3000"
+volumes:
+ db_data:
