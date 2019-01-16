@@ -16,9 +16,11 @@ RUN npm install -g mysql2
 
 COPY . .
 
+RUN chmod x+ /init_script.sh
+
 EXPOSE 3000
 
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT ["/bin/bash", "init_script.sh"]
 
 
 
